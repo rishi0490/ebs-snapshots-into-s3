@@ -1,0 +1,47 @@
+aws ec2 create-snapshot \
+    --volume-id vol-03475824d4d3ebc84 \
+    --description "This is just for testing snapshots for S3 - Root Volume (/dev/xvda)"
+
+
+
+aws ec2 create-snapshot \
+    --volume-id vol-0657bf2435add17e5 \
+    --description "This is just for testing snapshots for S3 - Data Volume (/dev/sdb)"
+
+
+aws ec2 register-image \
+    --name "testing-snapshotsfor-s3" \
+    --description "AMI created for testing snapshots stored in S3" \
+    --root-device-name /dev/xvda \
+    --block-device-mappings \
+      '[{"DeviceName":"/dev/xvda","Ebs":{"SnapshotId":"snap-07a5e64aed3e40ad4"}}, {"DeviceName":"/dev/sdb","Ebs":{"SnapshotId":"snap-0ffb28abcfb6fe335"}}]'
+
+
+
+"ImageId": "ami-0549debfbdce29ef0"
+
+
+aws ec2 create-store-image-task \
+--image-id ami-0549debfbdce29ef0 \
+--bucket testing-for-snapshots5
+
+
+    "ObjectKey": "ami-0549debfbdce29ef0.bin"
+
+
+But how much it will be take time?
+Its showns 4-12hours estimated
+
+
+aws ec2 describe-store-image-tasks \
+    --image-id ami-0549debfbdce29ef0
+
+
+
+aws ec2 create-restore-image-task \
+--object-key ami-0549debfbdce29ef0.bin \
+--bucket testing-for-snapshots5 \
+--name "Restored-AMI-From-S3with-attach1700gb"
+
+
+    "ImageId": "ami-065e44613af51c86a"
